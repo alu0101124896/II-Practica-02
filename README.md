@@ -64,3 +64,84 @@
    Con este script obtenemos los datos de las teclas ("wasd" o flechas) que han sido pulsadas y le aplicamos la transformación correspondiente a la posición del personaje. \
    También añadimos un atributo público para almacenar un multiplicador de la velocidad del personaje, que este pueda ser modificado desde el inspector de unity, y lo aplicamos al cálculo de la velocidad. \
    Finalmente, de forma parecida al desplazamiento horizontal, obtenemos los datos de las teclas ("qe" o ",.") y le aplicamos la transformación correspondiente a la rotación del personaje. Al igual que con la posición, la rotación también dispone de un atributo publico para modificar la velocidad.
+
+3. Sobre la escena que has trabajado programa los scripts necesarios para las siguientes acciones:
+   1. Se deben incluir varios cilindros sobre la escena. Cada vez que el objeto jugador colisione con alguno de ellos, deben aumentar su tamaño y el jugador aumentar puntuación.
+
+      ```cs
+      public class MyCharacterController : MonoBehaviour {
+         public int score;
+         // ...
+         void Start() {
+            score = 0;
+            // ...
+         }
+         // ...
+         void OnCollisionEnter(Collision other) {
+            if (other.gameObject.name == "Cylinder") {
+               score++;
+               other.transform.localScale *= 1.2f;
+            }
+         }
+      }
+      ```
+
+      ![ej-3.1](./img/ej-3.1.gif)
+
+   2. Agregar cilindros de tipo A, en los que además, si el jugador pulsa la barra espaciadora lo mueve hacia fuera de él.
+
+      ```cs
+      public class MyCharacterController : MonoBehaviour {
+         float minCylinderDistance;
+         // ...
+         void Start() {
+            minCylinderDistance = 3f;
+            //...
+         }
+         //...
+         void Update() {
+            //...
+            if (Input.GetKey(KeyCode.Space)) {
+               GameObject[] tipeACylinder = GameObject.FindGameObjectsWithTag("Type A Cylinder");
+               foreach (GameObject cylinder in tipeACylinder) {
+                  float cylinderDistance = Vector3.Distance(cylinder.transform.position, this.transform.position);
+                  if (cylinderDistance < minCylinderDistance) {
+                     Vector3 direction = cylinder.transform.position - this.transform.position;
+                     cylinder.transform.Translate(direction * Time.deltaTime);
+                  }
+               }
+            }
+         }
+         // ...
+      }
+      ```
+
+      ![ej-3.2](./img/ej-3.2.gif)
+
+   3. Se deben incluir cilindros que se alejen del jugador cuando esté próximo.
+
+      ```cs
+      public class MyCharacterController : MonoBehaviour {
+         float minCylinderDistance;
+         // ...
+         void Start() {
+            minCylinderDistance = 3f;
+            //...
+         }
+         //...
+         void Update() {
+            //...
+            GameObject[] tipeBCylinder = GameObject.FindGameObjectsWithTag("Type B Cylinder");
+            foreach (GameObject cylinder in tipeBCylinder) {
+               float cylinderDistance = Vector3.Distance(cylinder.transform.position, this.transform.position);
+               if (cylinderDistance < minCylinderDistance) {
+                  Vector3 direction = cylinder.transform.position - this.transform.position;
+                  cylinder.transform.Translate(direction * Time.deltaTime);
+               }
+            }
+         }
+         // ...
+      }
+      ```
+
+      ![ej-3.3](./img/ej-3.3.gif)
