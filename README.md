@@ -30,8 +30,37 @@
       Ambos objetos caen. No se observan diferencias con el apartado nº 3.
 
 2. Sobre la escena que has trabajado ubica un cubo que represente un personaje que vas a mover. Se debe implementar un script que haga de CharacterController. Cuando el jugador pulse las teclas de flecha (o wasd) el jugador se moverá en la dirección que estos ejes indican.
-   1. Crear un script para el personaje que lo desplace por la pantalla, sin aplicar simulación física. \
+   1. Crear un script para el personaje que lo desplace por la pantalla, sin aplicar simulación física.
+   2. Agregar un campo público que permita graduar la velocidad del movimiento desde el inspector de objetos.
+   3. Estar a la escucha de si el usuario ha utilizado los ejes virtuales. Elegir cuáles se va a permitir utilizar: flechas, wasd.
+   4. Elegir otros ejes virtuales para el giro y girar al jugador sobre el eje OY (up).
 
-   2. Agregar un campo público que permita graduar la velocidad del movimiento desde el inspector de objetos. \
+   ```cs
+   public class MyCharacterController : MonoBehaviour {
+      public float movementVelocity;
+      public float rotationVelocity;
 
-   3. Estar a la escucha de si el usuario ha utilizado los ejes virtuales. Elegir cuáles se va a permitir utilizar: flechas, wasd. \
+      // Start is called before the first frame update
+      void Start() {
+         movementVelocity = 2.5f;
+         rotationVelocity = 50.0f;
+      }
+
+      // Update is called once per frame
+      void Update() {
+         float xAxis = Input.GetAxis("xAxis");
+         float zAxis = Input.GetAxis("zAxis");
+         Vector3 moveDirection = new Vector3(xAxis, 0.0f, zAxis);
+         this.transform.position += moveDirection * movementVelocity * Time.deltaTime;
+
+         float yAxis = Input.GetAxis("yAxis");
+         this.transform.Rotate(0.0f, yAxis * rotationVelocity * Time.deltaTime, 0.0f);
+      }
+   }
+   ```
+
+   ![ej-2](./img/ej-2.gif)
+
+   Con este script obtenemos los datos de las teclas ("wasd" o flechas) que han sido pulsadas y le aplicamos la transformación correspondiente a la posición del personaje. \
+   También añadimos un atributo público para almacenar un multiplicador de la velocidad del personaje, que este pueda ser modificado desde el inspector de unity, y lo aplicamos al cálculo de la velocidad. \
+   Finalmente, de forma parecida al desplazamiento horizontal, obtenemos los datos de las teclas ("qe" o ",.") y le aplicamos la transformación correspondiente a la rotación del personaje. Al igual que con la posición, la rotación también dispone de un atributo publico para modificar la velocidad.
